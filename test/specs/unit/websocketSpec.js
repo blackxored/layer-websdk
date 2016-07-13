@@ -230,15 +230,17 @@ describe("The Websocket Socket Manager Class", function() {
             expect(websocketManager._socket).toEqual(jasmine.any(WebSocket));
         });
 
-        it("Should use the correct url", function() {
+        it("Should use the correct default url", function() {
            websocketManager._socket = null;
            websocketManager.connect();
+           expect(websocketManager._socket.url).toEqual('wss://websockets.layer.com/?session_token=sessionToken');
+        });
 
-           if (client.url === 'https://api.layer.com') {
-                expect(websocketManager._socket.url).toEqual('wss://websockets.layer.com/?session_token=sessionToken');
-            } else {
-                expect(websocketManager._socket.url).toEqual('wss://staging-websockets.layer.com/?session_token=sessionToken');
-            }
+        it("Should allow customization of the websocket url", function() {
+            client._websocketUrl = 'wss://staging-websockets.layer.com';
+            websocketManager._socket = null;
+            websocketManager.connect();
+            expect(websocketManager._socket.url).toEqual('wss://staging-websockets.layer.com/?session_token=sessionToken');
         });
 
         it("Should be subscribed to websocket events", function(done) {
