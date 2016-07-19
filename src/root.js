@@ -492,10 +492,16 @@ class Root extends EventClass {
     if (shouldScheduleTrigger) {
       this._lastDelayedTrigger = Date.now();
       if (typeof postMessage === 'function' && typeof jasmine === 'undefined') {
-        window.postMessage({
+        const eventOptions = {
           type: 'layer-delayed-event',
           internalId: this.internalId,
-        }, '*');
+        };
+
+        if (typeof document !== 'undefined') {
+          window.postMessage(eventOptions, '*');
+        } else {
+          window.postMessage(eventOptions);
+        }
       } else {
         setTimeout(() => this._processDelayedTriggers(), 0);
       }
